@@ -1,5 +1,7 @@
 package lectures.functions
 
+import scala.annotation.tailrec
+
 /**
   * Цель упражнения: вычислить 9 - е число Фибоначчи
   * Для этого раскомментируйте строчку в методе fibs и исправьте ошибку компиляции.
@@ -12,14 +14,13 @@ package lectures.functions
 object Fibonacci extends App {
 
   // Task 2
-  def fibs(num: Int) = {
-    if (num == 1) 1
-    if (num == 2) 1
-    //fibs(num - 1) + fibs(num - 2)
+  def fibs(num: Int): Int = num match {
+    case 0 | 1 => num
+    case _     => fibs(num - 1) + fibs(num - 2)
   }
 
-  println(fibs(9))
-  //println(fibs(1000))
+  println(fibs(16))
+//  println(fibs(1000))
 }
 
 /**
@@ -34,16 +35,29 @@ object Fibonacci extends App {
   */
 object Fibonacci2 extends App {
 
-  def fibs2(num: Int) =
-    if (num <= 3) Array(1, 1, 2)(num - 1)
-    else fibsImpl(num, Array(1, 1, 2))(num - 1)
+  val fibs: Stream[BigInt] = 0 #:: fibs.scanLeft(1: BigInt)(_ + _)
 
-  private def fibsImpl(num: Int, acc: Array[Int]): Array[Int] = ???
+  def fibs2(num: Int): BigInt = {
+    val acc = Array(BigInt(1), BigInt(1), BigInt(2))
+    if (num <= 3) acc(num - 1)
+    else fibsImpl(num, acc)(num - 1)
+  }
 
-  println(fibs2(16))
-  //println(fibs(1000))
+  @tailrec
+  private def fibsImpl(num: Int, acc: Array[BigInt]): Array[BigInt] =
+    num match {
+      case x if x == acc.length => acc
+      case _                    => fibsImpl(num, acc :+ acc(acc.length - 2) + acc(acc.length - 1))
+    }
+
+  def time[T](f: => T): Unit = {
+    val strt = System.currentTimeMillis()
+    val res = f
+    println(System.currentTimeMillis() - strt)
+    println(res)
+  }
+
+  time(fibs(100))
+  time(fibs2(100))
+
 }
-
-
-
-

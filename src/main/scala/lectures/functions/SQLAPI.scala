@@ -14,9 +14,9 @@ package lectures.functions
   * * * * * залогировать результат
   *
   * В результате в консоль должно быть выведено сообщение
-  *    some DB
-  *    some SQL
-  *    SQL has been executed. Congrats!
+  * some DB
+  * some SQL
+  * SQL has been executed. Congrats!
   *
   *
   * Обратите внимание на то, что композиция функций учит писать код в декларативном виде
@@ -33,22 +33,43 @@ class SQLAPI(resource: String) {
 
     def open(): Connection = this.copy(opened = true)
 
-    def execute(sql: String): String = if (opened) result else throw new Exception("You have to open connection before execute")
+    def execute(sql: String): String =
+      if (opened) result
+      else throw new Exception("You have to open connection before execute")
 
   }
 
-  private def logParameter[T](prm: T): T  = ???
+  private def logParameter(prm: String): String = {
+    println(prm.toString)
+    prm
+  }
 
-  val connection = (resource: String) => Connection(resource)
+  val connection: String => Connection = (resource: String) =>
+    Connection(resource)
 
-  def execute(sql: String): String = ??? // use resource from constructor
+  def execute(sql: String): String = {
 
+    /**Вариант в одну строку
+      **/
+//    ((connection compose logParameter andThen openConnection)(resource) compose logParameter andThen logParameter)(
+//      sql)
 
-  def openConnection(connection: Connection): (String) => String =
+    val prepareConnection
+      : String => String => String = connection compose logParameter andThen openConnection
+
+    val logSqlAndPrepareConnection = prepareConnection(resource) compose logParameter
+
+    val exec = logSqlAndPrepareConnection andThen logParameter
+
+    exec(sql)
+  }
+
+  // use resource from constructor}
+
+  def openConnection(connection: Connection): String => String =
     (sql: String) => {
       connection.open execute sql
-  }
-
+    }
 }
 
 object SQLCheck extends App {
