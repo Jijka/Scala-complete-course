@@ -24,24 +24,39 @@ package lectures.operators
   * Для решения задачи раскомментируйте тело объекта Competition
   * В целях упрощения можно поменять тип исходных данных
   */
-
 object Competition extends App {
 
-  val locals = Map("Artem" -> 6, "Sergey" -> 5, "Anton" -> 2, "Vladimir" -> "2", "Alexander" -> 4D)
-  val foreigners = Map[String, Int]("John" -> 3, "James" -> 1, "Tom" -> 2, "Dick" -> 5, "Eric" -> 6)
+  val locals = Map("Artem" -> 6,
+    "Sergey" -> 5,
+    "Anton" -> 2,
+    "Vladimir" -> "2",
+    "Alexander" -> 4D)
+  val foreigners = Map[String, Int]("John" -> 3,
+    "James" -> 1,
+    "Tom" -> 2,
+    "Dick" -> 5,
+    "Eric" -> 6)
 
-  //  val results = for (l <- locals;
-  //                     ???) {
-  //    val localName = l._1
-  //    val localValue = l._2
-  //    ???
-  //  }
+  val results: Map[String, Int] = for (l <- locals;
+                                       f <- foreigners) yield {
+    val localName = l._1
+    val localValue: Int = l._2 match {
+      case s: String => s.toInt
+      case d: Double => d.toInt
+      case i: Int    => i
+    }
+    val foreignName = f._1
+    val foreignValue = f._2
+    (s"$localName vs $foreignName", localValue - foreignValue)
+  }
 
-  //  var finalResult = 0
-  //  for (r <- results) {
-  //    if (???) finalResult = finalResult + 1
-  //    else ???
-  //  }
+  var finalResult = 0
+  for (r <- results) {
+    if (r._2 > 0) finalResult = finalResult + 1
+    else finalResult = finalResult - 1
+  }
 
-  print("Победила дружба")
+  if (finalResult > 0) println("Наша взяла")
+  else if (finalResult < 0) println("Продули")
+  else println("Победила дружба")
 }
