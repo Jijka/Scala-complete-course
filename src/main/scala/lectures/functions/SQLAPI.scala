@@ -14,9 +14,9 @@ package lectures.functions
   * * * * * залогировать результат
   *
   * В результате в консоль должно быть выведено сообщение
-  *    some DB
-  *    some SQL
-  *    SQL has been executed. Congrats!
+  * some DB
+  * some SQL
+  * SQL has been executed. Congrats!
   *
   *
   * Обратите внимание на то, что композиция функций учит писать код в декларативном виде
