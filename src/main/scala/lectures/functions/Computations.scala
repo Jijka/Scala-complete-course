@@ -19,12 +19,12 @@ object Computation extends Data {
   def computation(filterData: String,
                   dataProducer: Array[String]): Array[String] = {
     //EMULATE HEAVY LOAD
-//    Thread.sleep(10)
+    Thread.sleep(10)
     //PRODUCE WORDS ARRAY FROM A STRING
     val filterArray = filterData.split(" ")
 
     //EMULATE HEAVY LOAD
-//    Thread.sleep(100)
+    Thread.sleep(100)
     // LEAVE ONLY EQUAL WORDS IN BOTH ARRAYS
     dataProducer.filter(dataItem => filterArray.contains(dataItem))
   }
@@ -46,12 +46,12 @@ object CurriedComputation extends Data {
   def curriedComputation(filterData: String)(
       dataProducer: Array[String]): Array[String] = {
     //EMULATE HEAVY LOAD
-//    Thread.sleep(10)
+    Thread.sleep(10)
     //PRODUCE WORDS ARRAY FROM A STRING
     val filterArray = filterData.split(" ")
 
     //EMULATE HEAVY LOAD
-//    Thread.sleep(100)
+    Thread.sleep(100)
     // LEAVE ONLY EQUAL WORDS IN BOTH ARRAYS
     dataProducer.filter(dataItem => filterArray.contains(dataItem))
   }

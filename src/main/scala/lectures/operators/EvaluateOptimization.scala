@@ -24,36 +24,39 @@ import lectures.functions.{
   */
 object EvaluateOptimization extends App with Data {
 
-  def time[T](currentTimeFunction: () => Long)(f: => T): Long = {
-    val computationStartTimestamp = currentTimeFunction()
-    f
-    val elapsedTime = currentTimeFunction() - computationStartTimestamp
-    println(s"Elapsed time in computation(): $elapsedTime ms")
+  case class Times(count: Int)
+
+  def time[T](timeFunction: () => Long)(f: => T)(
+      implicit c: Times = Times(1)): Long = {
+    val computationStartTimestamp = timeFunction()
+    for (_ <- 1 to c.count) { f }
+    val endTime = timeFunction()
+    val elapsedTime = endTime - computationStartTimestamp
+    println(
+      s"Elapsed time in computation(): $elapsedTime ms $computationStartTimestamp $endTime")
     elapsedTime
   }
 
-  def timeForLoop[T](count: Int)(currentTimeFunction: () => Long)(
-      f: => T): Long = {
-    time(currentTimeFunction) { for (_ <- 1 to count) { f } }
-  }
+  implicit val times: Times = Times(10)
 
-  val hundredTimesMillis: Unit => Long = f =>
-    timeForLoop(10000000)(() => System.currentTimeMillis)(f)
-  val hundredTimesNanos: Unit => Long = f =>
-    timeForLoop(10000000)(() => System.nanoTime)(f)
+  def hundredTimesMillis[T](f: => T): Long =
+    time(System.currentTimeMillis) { f }
+
+  def hundredTimesNanos[T](f: => T): Long =
+    time(System.nanoTime) { f }
 
   // ВЫПОЛНИТЬ В ЦИКЛЕ ОТ 1 ДО 100 Computation.computation
-  val elapsed = hundredTimesMillis { () =>
+  val elapsed = hundredTimesMillis {
     Computation.computation(filterData, dataArray)
   }
 
   // ВЫПОЛНИТЬ В ЦИКЛЕ ОТ 1 ДО 100 CurriedComputation.partiallyAppliedCurriedFunction
-  val partiallyAppliedElapsed = hundredTimesMillis { () =>
+  val partiallyAppliedElapsed = hundredTimesMillis {
     CurriedComputation.partiallyAppliedCurriedFunction(dataArray)
   }
 
   // ВЫПОЛНИТЬ В ЦИКЛЕ ОТ 1 ДО 100 FunctionalComputation.filterApplied
-  val appliedElapsed = hundredTimesMillis { () =>
+  val appliedElapsed = hundredTimesMillis {
     FunctionalComputation.filterApplied(dataArray)
   }
 
@@ -64,17 +67,17 @@ object EvaluateOptimization extends App with Data {
     s"Difference is about ${partiallyAppliedElapsed - appliedElapsed} milliseconds")
 
   // ВЫПОЛНИТЬ В ЦИКЛЕ ОТ 1 ДО 100 Computation.computation
-  val elapsedNano = hundredTimesNanos { () =>
+  val elapsedNano = hundredTimesNanos {
     Computation.computation(filterData, dataArray)
   }
 
   // ВЫПОЛНИТЬ В ЦИКЛЕ ОТ 1 ДО 100 CurriedComputation.partiallyAppliedCurriedFunction
-  val partiallyAppliedElapsedNano = hundredTimesNanos { () =>
+  val partiallyAppliedElapsedNano = hundredTimesNanos {
     CurriedComputation.partiallyAppliedCurriedFunction(dataArray)
   }
 
   // ВЫПОЛНИТЬ В ЦИКЛЕ ОТ 1 ДО 100 FunctionalComputation.filterApplied
-  val appliedElapsedNano = hundredTimesNanos { () =>
+  val appliedElapsedNano = hundredTimesNanos {
     FunctionalComputation.filterApplied(dataArray)
   }
 
@@ -82,5 +85,5 @@ object EvaluateOptimization extends App with Data {
   // И ФУНКЦИОНАЛЬНОЙ
 
   println(
-    s"Difference is about ${(partiallyAppliedElapsedNano - appliedElapsedNano) / 1e-6} milliseconds")
+    s"Difference is about ${(partiallyAppliedElapsedNano - appliedElapsedNano)/1e-6} milliseconds")
 }
