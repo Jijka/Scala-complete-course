@@ -18,19 +18,15 @@ object Computation extends Data {
 
   def computation(filterData: String,
                   dataProducer: Array[String]): Array[String] = {
-    //EMULATE HEAVY LOAD
-    Thread.sleep(10)
     //PRODUCE WORDS ARRAY FROM A STRING
     val filterArray = filterData.split(" ")
 
-    //EMULATE HEAVY LOAD
-    Thread.sleep(100)
     // LEAVE ONLY EQUAL WORDS IN BOTH ARRAYS
     dataProducer.filter(dataItem => filterArray.contains(dataItem))
   }
 
-//  val result = computation(filterData, dataArray)
-//  result.foreach(println)
+  computation(filterData, dataArray).foreach(println)
+
 }
 
 /**
@@ -45,13 +41,10 @@ object CurriedComputation extends Data {
 
   def curriedComputation(filterData: String)(
       dataProducer: Array[String]): Array[String] = {
-    //EMULATE HEAVY LOAD
-    Thread.sleep(10)
+
     //PRODUCE WORDS ARRAY FROM A STRING
     val filterArray = filterData.split(" ")
 
-    //EMULATE HEAVY LOAD
-    Thread.sleep(100)
     // LEAVE ONLY EQUAL WORDS IN BOTH ARRAYS
     dataProducer.filter(dataItem => filterArray.contains(dataItem))
   }
@@ -59,9 +52,7 @@ object CurriedComputation extends Data {
   val partiallyAppliedCurriedFunction: Array[String] => Array[String] =
     curriedComputation(filterData)
 
-//  val result = partiallyAppliedCurriedFunction(dataArray)
-//
-//  result.foreach(println)
+  partiallyAppliedCurriedFunction(dataArray).foreach(println)
 }
 
 /**
@@ -72,12 +63,11 @@ object CurriedComputation extends Data {
 object FunctionalComputation extends Data {
 
   def functionalComputation(
-      filterData: String): Array[String] => Array[String] =
-    data => data.filter(dataItem => filterData.contains(dataItem))
+      filterArray: Array[String]): Array[String] => Array[String] =
+    data => data.filter(filterArray.contains(_))
 
   val filterApplied: Array[String] => Array[String] = functionalComputation(
-    filterData)
+    filterData.split(" "))
 
-//  val result = filterApplied(dataArray)
-//  result.foreach(println)
+  filterApplied(dataArray).foreach(println)
 }

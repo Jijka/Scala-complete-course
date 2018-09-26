@@ -37,7 +37,7 @@ object EvaluateOptimization extends App with Data {
     elapsedTime
   }
 
-  implicit val times: Times = Times(10)
+  implicit val times: Times = Times(1000)
 
   def hundredTimesMillis[T](f: => T): Long =
     time(System.currentTimeMillis) { f }

@@ -27,15 +27,15 @@ package lectures.operators
 object Competition extends App {
 
   val locals = Map("Artem" -> 6,
-    "Sergey" -> 5,
-    "Anton" -> 2,
-    "Vladimir" -> "2",
-    "Alexander" -> 4D)
+                   "Sergey" -> 5,
+                   "Anton" -> 2,
+                   "Vladimir" -> "2",
+                   "Alexander" -> 4D)
   val foreigners = Map[String, Int]("John" -> 3,
-    "James" -> 1,
-    "Tom" -> 2,
-    "Dick" -> 5,
-    "Eric" -> 6)
+                                    "James" -> 1,
+                                    "Tom" -> 2,
+                                    "Dick" -> 5,
+                                    "Eric" -> 6)
 
   val results: Map[String, Int] = for (l <- locals;
                                        f <- foreigners) yield {
@@ -44,19 +44,20 @@ object Competition extends App {
       case s: String => s.toInt
       case d: Double => d.toInt
       case i: Int    => i
+      case _         => throw new Exception("Недопустимый входящий параметр")
     }
     val foreignName = f._1
     val foreignValue = f._2
     (s"$localName vs $foreignName", localValue - foreignValue)
   }
 
-  var finalResult = 0
-  for (r <- results) {
-    if (r._2 > 0) finalResult = finalResult + 1
-    else finalResult = finalResult - 1
+  val finalResult = for { (_, r) <- results } yield {
+    if (r > 0) 1
+    else if (r == 0) 0
+    else -1
   }
 
-  if (finalResult > 0) println("Наша взяла")
-  else if (finalResult < 0) println("Продули")
+  if (finalResult.sum > 0) println("Наша взяла")
+  else if (finalResult.sum < 0) println("Продули")
   else println("Победила дружба")
 }
