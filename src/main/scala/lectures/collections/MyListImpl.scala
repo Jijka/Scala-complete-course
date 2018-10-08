@@ -29,19 +29,19 @@ object MyListImpl extends App {
       if (p(x)) MyList(List(x)) else MyList(List.empty[Int])
     }
 
-    def foldLeft1[A](acc: A)(op: (A, A) => A): A = data match {
+    def foldLeft1(acc: Int)(op: (Int, Int) => Int): Int = data match {
       case Nil          => acc
-      case head :: tail => MyList(tail).foldLeft(op(acc, head))(op)
+      case head :: tail => MyList(tail).foldLeft1(op(acc, head))(op)
     }
 
-    def foldLeft[A](zero: A)(op: (A, A) => A): A = {
+    def foldLeft(acc: Int)(op: (Int, Int) => Int): Int = {
       @tailrec
-      def go(acc: A, myList: List[Int]): A = myList match {
+      def go(acc: Int, myList: List[Int]): Int = myList match {
         case Nil          => acc
         case head :: tail => go(op(acc, head), tail)
       }
 
-      go(zero, data)
+      go(acc, data)
     }
   }
 
