@@ -5,18 +5,20 @@ import scala.util.Random
 /**
   * Created by s.popov2 on 10.06.2016.
   */
-
 trait Credentials
 
 object CardCredentials {
-  def apply(): CardCredentials = CardCredentials((Math.random()* 1000).toInt )
+  def apply(): CardCredentials = CardCredentials((Math.random() * 1000).toInt)
 }
 case class CardCredentials(cardNumber: Int) extends Credentials
 
 object LPCredentials {
-  def apply(): LPCredentials = LPCredentials(Random.alphanumeric.take(10).mkString, Random.alphanumeric.take(10).mkString)
+  def apply(): LPCredentials =
+    LPCredentials(Random.alphanumeric.take(10).mkString,
+                  Random.alphanumeric.take(10).mkString)
 }
-case class LPCredentials(login: String, passwordHash: String) extends Credentials
+case class LPCredentials(login: String, passwordHash: String)
+    extends Credentials
 
 trait User {
   def id: Int
@@ -28,12 +30,12 @@ case class AnonymousUser() extends User {
 }
 
 object CardUser {
-  def apply(): CardUser = CardUser((Math.random() * 5).toInt , CardCredentials())
+  def apply(): CardUser = CardUser((Math.random() * 5).toInt, CardCredentials())
 }
 case class CardUser(id: Int, credentials: CardCredentials) extends User
 
 object LPUser {
-  def apply(): LPUser = LPUser((Math.random() * 5).toInt , LPCredentials())
+  def apply(): LPUser = LPUser((Math.random() * 5).toInt, LPCredentials())
 }
 case class LPUser(id: Int, credentials: LPCredentials) extends User
 
@@ -45,29 +47,101 @@ object AuthenticationData {
   val authUserCreds2 = LPCredentials("qwerty2", "qwerty2")
 
   val registeredCards: Set[CardCredentials] = Set(
-    CardCredentials(), CardCredentials(), CardCredentials(), cardUserCreds,
-    CardCredentials(), CardCredentials(), CardCredentials(), CardCredentials(),
-    CardCredentials(), CardCredentials(), cardUserCreds2
+    CardCredentials(),
+    CardCredentials(),
+    CardCredentials(),
+    cardUserCreds,
+    CardCredentials(),
+    CardCredentials(),
+    CardCredentials(),
+    CardCredentials(),
+    CardCredentials(),
+    CardCredentials(),
+    cardUserCreds2
   )
 
   val registeredLoginAndPassword: Set[LPCredentials] = Set(
-    LPCredentials(), LPCredentials(), LPCredentials(), LPCredentials(),
-    LPCredentials(), LPCredentials(), LPCredentials(), LPCredentials(),
-    LPCredentials(), LPCredentials(), LPCredentials(), LPCredentials(),
-    LPCredentials()
+    LPCredentials(),
+    LPCredentials(),
+    LPCredentials(),
+    LPCredentials(),
+    authUserCreds,
+    LPCredentials(),
+    LPCredentials(),
+    LPCredentials(),
+    LPCredentials(),
+    LPCredentials(),
+    LPCredentials(),
+    LPCredentials(),
+    LPCredentials(),
+    LPCredentials(),
+    authUserCreds2
   )
 
   val testUsers = List[User](
-    AnonymousUser(), AnonymousUser(), AnonymousUser(), AnonymousUser(), AnonymousUser(),
-    AnonymousUser(), AnonymousUser(), AnonymousUser(), AnonymousUser(), AnonymousUser(),
-    AnonymousUser(), AnonymousUser(), AnonymousUser(), AnonymousUser(), AnonymousUser(),
-    CardUser(), CardUser(), CardUser(), CardUser(), CardUser(), CardUser(), CardUser(),
-    CardUser(), CardUser(), CardUser(), CardUser(), CardUser(), CardUser(), CardUser(),
-    CardUser(), CardUser(), CardUser(), CardUser(), CardUser(), CardUser(), CardUser(),
-    LPUser(), LPUser(), LPUser(), LPUser(), LPUser(), LPUser(), LPUser(), LPUser(), LPUser(),
-    LPUser(), LPUser(), LPUser(), LPUser(), LPUser(), LPUser(), LPUser(), LPUser(), LPUser(),
-    LPUser(), LPUser(), LPUser(), LPUser(), LPUser(), LPUser(),
-    LPUser(1234, authUserCreds), LPUser(4567, authUserCreds2),
-    CardUser(4567, cardUserCreds), CardUser(45679, cardUserCreds2)
+    AnonymousUser(),
+    AnonymousUser(),
+    AnonymousUser(),
+    AnonymousUser(),
+    AnonymousUser(),
+    AnonymousUser(),
+    AnonymousUser(),
+    AnonymousUser(),
+    AnonymousUser(),
+    AnonymousUser(),
+    AnonymousUser(),
+    AnonymousUser(),
+    AnonymousUser(),
+    AnonymousUser(),
+    AnonymousUser(),
+    CardUser(),
+    CardUser(),
+    CardUser(),
+    CardUser(),
+    CardUser(),
+    CardUser(),
+    CardUser(),
+    CardUser(),
+    CardUser(),
+    CardUser(),
+    CardUser(),
+    CardUser(),
+    CardUser(),
+    CardUser(),
+    CardUser(),
+    CardUser(),
+    CardUser(),
+    CardUser(),
+    CardUser(),
+    CardUser(),
+    CardUser(),
+    LPUser(),
+    LPUser(),
+    LPUser(),
+    LPUser(),
+    LPUser(),
+    LPUser(),
+    LPUser(),
+    LPUser(),
+    LPUser(),
+    LPUser(),
+    LPUser(),
+    LPUser(),
+    LPUser(),
+    LPUser(),
+    LPUser(),
+    LPUser(),
+    LPUser(),
+    LPUser(),
+    LPUser(),
+    LPUser(),
+    LPUser(),
+    LPUser(),
+    LPUser(),
+    LPUser(),
+    LPUser(1234, authUserCreds),
+    LPUser(4567, authUserCreds2),
+    CardUser(4567, cardUserCreds),
+    CardUser(45679, cardUserCreds2)
   )
 }

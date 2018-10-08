@@ -44,7 +44,6 @@ class SQLAPI(resource: String) {
     prm
   }
 
-
   val connection: String => Connection = (resource: String) =>
     Connection(resource)
 
