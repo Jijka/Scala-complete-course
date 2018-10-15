@@ -68,10 +68,8 @@ object OptionVsNPE extends App {
   }
 
   def getConnection(resource: Resource): Connection =
-    Option(ConnectionProducer.produce(resource)) match {
-      case Some(value) => value
-      case None        => getConnection(resource)
-    }
+    Option(ConnectionProducer.produce(resource))
+      .getOrElse(getConnection(resource))
 
   def businessLogic: String =
     try {
