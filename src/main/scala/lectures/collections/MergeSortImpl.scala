@@ -7,19 +7,19 @@ package lectures.collections
   */
 object MergeSortImpl extends App {
 
+  def merge(left: Seq[Int], right: Seq[Int]): Seq[Int] =
+    (left, right) match {
+      case (Nil, ys) => ys
+      case (xs, Nil) => xs
+      case (x :: xTail, y :: yTail) =>
+        if (x < y) Seq(x) ++ merge(xTail, right)
+        else Seq(y) ++ merge(left, yTail)
+    }
+
   def mergeSort(data: Seq[Int]): Seq[Int] = {
     val n = data.length / 2
     if (n == 0) data
     else {
-      def merge(left: Seq[Int], right: Seq[Int]): Seq[Int] =
-        (left, right) match {
-          case (Nil, ys) => ys
-          case (xs, Nil) => xs
-          case (x :: xTail, y :: yTail) =>
-            if (x < y) Seq(x) ++ merge(xTail, right)
-            else Seq(y) ++ merge(left, yTail)
-        }
-
       val (left, right) = data splitAt n
       merge(mergeSort(left), mergeSort(right))
     }
