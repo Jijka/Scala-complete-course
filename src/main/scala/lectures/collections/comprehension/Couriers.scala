@@ -51,16 +51,12 @@ object CouriersWithComprehension extends App {
   // какие адреса были обслужены
   def serveAddresses(addresses: List[Address],
                      couriers: List[Courier]): List[Address] = {
-    couriers
-      .withFilter(_ => traffic().degree < 5)
-      .flatMap { c =>
-        List.fill(c.canServe)(c)
-      }
-      .zipWithIndex
-      .collect {
-        case (_, index: Int) if index < addresses.length =>
-          addresses(index)
-      }
+
+    val availableCouriersCount: Int = couriers
+      .filter(_ => traffic().degree < 5)
+      .foldLeft(0)(_ + _.canServe)
+
+    addresses.take(availableCouriersCount)
   }
 
   def traffic(): Traffic = Traffic(Math.random() * 10)
