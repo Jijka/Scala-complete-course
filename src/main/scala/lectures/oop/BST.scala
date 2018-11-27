@@ -1,6 +1,5 @@
 package lectures.oop
 
-
 /**
   * BSTImpl - это бинарное дерево поиска, содержащее только значения типа Int
   *
@@ -27,21 +26,69 @@ trait BST {
   val left: Option[BST]
   val right: Option[BST]
 
+  def +(newValue: Int): BST
+
   def add(newValue: Int): BST
 
+  def withLeft(newLeft: BST): BST
+
+  def withRight(newRight: BST): BST
+
   def find(value: Int): Option[BST]
+
+  def prefix_traverse: Int
+
+}
+
+object BST {
+
+  private def recurse(root: BST, elems: List[Int] = List.empty[Int]): BST =
+    elems match {
+      case Nil          => root
+      case head :: tail => recurse(root + head, tail)
+    }
+
+  def apply(elem: Int): BST = BSTImpl(elem)
+
+  def apply(root: BST, list: List[Int]): BST = recurse(root, list)
+
+  def apply(root: BST, elems: Int*): BST = recurse(root, elems.toList)
 }
 
 case class BSTImpl(value: Int,
-                   left: Option[BSTImpl] = None,
-                   right: Option[BSTImpl] = None) extends BST {
+                   left: Option[BST] = None,
+                   right: Option[BST] = None)
+    extends BST {
 
-  def add(newValue: Int): BST = ???
+  def +(newValue: Int): BST = add(newValue)
 
-  def find(value: Int): Option[BST] = ???
+  def withLeft(newLeft: BST): BST = this.copy(left = Some(newLeft))
 
-  // override def toString() = ???
+  def withRight(newRight: BST): BST = this.copy(right = Some(newRight))
 
+  def add(newValue: Int): BST = {
+    if (newValue < value)
+      withLeft(left.map(_ + newValue).getOrElse(BST(newValue)))
+    else if (newValue > value)
+      withRight(right.map(_ + newValue).getOrElse(BST(newValue)))
+    else this
+  }
+
+  def find(value: Int): Option[BST] = this match {
+    case BSTImpl(`value`, _, _)                    => Some(this)
+    case BSTImpl(root, Some(l), _) if value < root => l.find(value)
+    case BSTImpl(root, _, Some(r)) if value > root => r.find(value)
+    case _                                         => None
+  }
+
+  def prefix_traverse: Int = this match {
+    case BSTImpl(`value`, _, _) => `value`
+    case BSTImpl(_, Some(l), _) => l.prefix_traverse
+  }
+
+  override def toString: String =
+    value + "\n" + "[l=" + left.getOrElse("Empty") + "][ r=" + right.getOrElse(
+      "Empty") + "]"
 }
 
 object TreeTest extends App {
@@ -56,10 +103,14 @@ object TreeTest extends App {
 
   // Generate huge tree
   val root: BST = BSTImpl(maxValue / 2)
-  val tree: BST = ??? // generator goes here
+
+  // generator goes here
+  val generatedNodes = List.fill(nodesCount)((Math.random() * maxValue).toInt)
+
+  val tree: BST = BST(root, generatedNodes)
 
   // add marker items
-  val testTree = tree.add(markerItem).add(markerItem2).add(markerItem3)
+  val testTree = tree + markerItem + markerItem2 + markerItem3
 
   // check that search is correct
   require(testTree.find(markerItem).isDefined)
@@ -67,4 +118,5 @@ object TreeTest extends App {
   require(testTree.find(markerItem).isDefined)
 
   println(testTree)
+
 }
