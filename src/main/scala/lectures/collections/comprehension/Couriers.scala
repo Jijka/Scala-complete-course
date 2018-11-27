@@ -13,31 +13,26 @@ package lectures.collections.comprehension
   * Во второй - количество курьеров, вышедших на работу.
   *
   * Ваша задача:
-  *  Изучить код и переписать его так,
-  *  что бы в нем не было ни одного цикла for, ни одной переменной или мутабильной коллекции
+  * Изучить код и переписать его так,
+  * что бы в нем не было ни одного цикла for, ни одной переменной или мутабильной коллекции
   *
   * Для этого используйте функции комбинаторы: filter, withFilter, fold, map, flatMap и т.д.
   *
   */
-
 case class Traffic(degree: Double)
 
 object Courier {
   def couriers(courierCount: Int): List[Courier] =
-    (for (i <- 1 to courierCount) yield {
-      Courier(i)
-    }).toList
+    List.tabulate(courierCount)(Courier(_))
 }
 
 case class Courier(index: Int) {
-  val canServe = (Math.random() * 10).toInt
+  val canServe: Int = (Math.random() * 10).toInt
 }
 
 object Address {
   def addresses(addressesCount: Int): List[Address] =
-    (for (i <- 1 to addressesCount) yield {
-      Address(s"$i$i$i")
-    }).toList
+    List.tabulate(addressesCount)(i => Address(s"${i + 1}${i + 1}${i + 1}"))
 }
 
 case class Address(postIndex: String)
@@ -54,24 +49,22 @@ object CouriersWithComprehension extends App {
   val cours = couriers(courierCount)
 
   // какие адреса были обслужены
-  def serveAddresses(addresses: List[Address], couriers: List[Courier]) = {
-    var accum = 0
-    for (courier <- couriers;
-         trafficDegree = traffic().degree;
-         t <- 0 until courier.canServe if trafficDegree < 5 && accum < addresses.length
-    ) yield {
-      val addr = addresses(accum)
-      accum = accum + 1
-      addr
-    }
+  def serveAddresses(addresses: List[Address],
+                     couriers: List[Courier]): List[Address] = {
+
+    val availableCouriersCount: Int = couriers
+      .filter(_ => traffic().degree < 5)
+      .foldLeft(0)(_ + _.canServe)
+
+    addresses.take(availableCouriersCount)
   }
 
-  def traffic(): Traffic = new Traffic(Math.random() * 10)
+  def traffic(): Traffic = Traffic(Math.random() * 10)
 
-  def printServedAddresses(addresses: List[Address], couriers: List[Courier]) =
-    for (a <- serveAddresses(addresses, couriers)) {
-      println(a.postIndex)
-    }
+  def printServedAddresses(addresses: List[Address],
+                           couriers: List[Courier]): Unit =
+    serveAddresses(addresses, couriers).foreach((a: Address) =>
+      println(a.postIndex))
 
   printServedAddresses(addrs, cours)
 
