@@ -44,7 +44,9 @@ trait BST {
 
 }
 
-case class BSTLevel(bst: BST, level: Int)
+case class BSTLevel(bst: BST, level: Int) extends Ordered[BSTLevel] {
+  override def compare(that: BSTLevel): Int = this.level compare that.level
+}
 
 object BST {
 
@@ -128,6 +130,12 @@ case class BSTImpl(value: Int,
     go(this, 1)
   }
 
+  lazy val list = this.toList
+
+  val deep = list.max.level
+
+  override def toString: String =
+    this.value + System.lineSeparator() + this.left + this.right
   //  override def toString: String = {
   //    println(this.foreach(identity))
   //    ""
@@ -148,9 +156,9 @@ case class BSTImpl(value: Int,
 
 object TreeTest extends App {
 
-  //  val sc = new java.util.Scanner(System.in)
+  val sc = new java.util.Scanner(System.in)
   val maxValue = 110000
-  //  val nodesCount = sc.nextInt()
+  val nodesCount = sc.nextInt()
 
   val markerItem = (Math.random() * maxValue).toInt
   val markerItem2 = (Math.random() * maxValue).toInt
@@ -161,21 +169,20 @@ object TreeTest extends App {
   val root: BST = BST(100)
 
   // generator goes here
-  val generatedNodes = List(15, 190, 3, 91, 205, 171, 155, 303, 13, 17)
-  //  val generatedNodes = List.fill(nodesCount)((Math.random() * maxValue).toInt)
+//  val generatedNodes = List(15, 190, 3, 91, 205, 171, 155, 303, 13, 17)
+  val generatedNodes = List.fill(nodesCount)((Math.random() * maxValue).toInt)
 
   val tree: BST = BST(root, generatedNodes)
 
-  // add marker items
-  //  val testTree = tree + markerItem + markerItem2 + markerItem3
+//   add marker items
+  val testTree = tree + markerItem + markerItem2 + markerItem3
 
-  val l = tree.toList
-  print(tree.toString)
-  // check that search is correct
-  //  require(testTree.find(markerItem).isDefined)
-  //  require(testTree.find(markerItem).isDefined)
-  //  require(testTree.find(markerItem).isDefined)
 
-  //  println(testTree)
+//   check that search is correct
+    require(testTree.find(markerItem).isDefined)
+    require(testTree.find(markerItem).isDefined)
+    require(testTree.find(markerItem).isDefined)
+
+    println(testTree)
 
 }
